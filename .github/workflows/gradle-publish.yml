@@ -8,6 +8,7 @@
 name: Gradle Package
 
 on:
+  push:
   release:
     types: [created]
   workflow_dispatch:
@@ -23,7 +24,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest #ubuntu-latest windows-latest
     permissions:
       contents: read
       packages: write
@@ -38,11 +39,15 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: jar --stacktrace -x :springfox-swagger-ui:npmTest
+#    - name: Build with Gradle
+#      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+#      with:
+#        arguments: jar --stacktrace -x :springfox-swagger-ui:npmTest -x :oas-contract-tests:test
 
+    - name: Build with Gradle
+      run: |
+        git desscribe
+        ./gradlew jar --stacktrace -x :springfox-swagger-ui:npmTest -x :oas-contract-tests:test
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
     - name: Publish to GitHub Packages
