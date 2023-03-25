@@ -25,9 +25,9 @@ buildscript {
 
 plugins {
   id "de.undercouch.download" version "3.4.3"
-  id "com.moowork.node" version "1.2.0"
+  //id "com.moowork.node" version "1.3.1"
+  id("com.github.node-gradle.node") version "2.2.0"
 }
-
 ext {
   swaggerUiVersion = '3.17.1'
   swaggerUiDist = "build/libs/swagger-ui-dist.zip"
