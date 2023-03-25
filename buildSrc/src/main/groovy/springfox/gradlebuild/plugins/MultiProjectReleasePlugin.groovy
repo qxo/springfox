@@ -65,15 +65,15 @@ class MultiProjectReleasePlugin implements Plugin<Project> {
     showPublishInfo = project.task('showPublishInfo') {
       group = 'Help'
       description = 'Show project publishing information'
+      doLast {
+        project.logger.lifecycle "[RELEASE] Project version: $project.version, $versioningInfo"
+      }
     }
 
     configureVersion(project, versioningInfo)
     configureGlobalTasks()
     configureSnapshotTaskGraph(project)
     configureReleaseTaskGraph(project)
-    project.tasks.showPublishInfo << {
-      project.logger.lifecycle "[RELEASE] Project version: $project.version, $versioningInfo"
-    }
   }
 
   def configureGlobalTasks() {
@@ -107,7 +107,6 @@ class MultiProjectReleasePlugin implements Plugin<Project> {
       publishTask.dependsOn javaCheckTasks
       publishTask.dependsOn bintrayUploadTasks
     }
-
     bumpAndTagTask.dependsOn publishTask
     releaseTask.dependsOn bumpAndTagTask
   }
