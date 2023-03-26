@@ -20,7 +20,13 @@ on:
         options:
         - false
         - true
-
+      releaseOn:
+        type: choice
+        required: false
+        description: ''
+        options:
+        - true
+        - false
 jobs:
   build:
 
@@ -50,14 +56,22 @@ jobs:
         git --version
         git branch -vv
         git fetch --tags
+        mkdir -p ~/.gradle && cp ./.github/init.gradle ~/.gradle/
         ./gradlew jar --stacktrace
     # -x :springfox-swagger-ui:npmTest
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
     - name: Publish to GitHub Packages
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: publish
-      env:
-        USERNAME: ${{ github.actor }}
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: ${{ github.event.inputs.deployOn == 'true' || startsWith(github.ref_name, 'tag4') }}
+      run: |
+        export GPR_USER="${{ github.actor }}"
+        export GPR_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+        export SPRINGFOX_RELASE="${{github.event.inputs.releaseOn}}"
+        ./gradlew publishMavenJavaPublicationToGitHubPackagesRepository  --stacktrace
+#      uses: gradle/gradle-build-action@v2
+#      with:
+#        arguments: publishMavenJavaPublicationToMavenRepository
+#        gradle-version: 4.9
+#      env:
+#        GPR_USER: ${{ github.actor }}
+#        GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -17,7 +17,8 @@ class BuildInfoFactory {
   BuildInfo create(Project project) {
     ReleaseType releaseType = releaseType(project)
     boolean dryRun = dryRun(project)
-    def isReleaseBuild = project.gradle.startParameter.taskNames.contains("release")
+    def taskNames = project.gradle.startParameter.taskNames;
+    def isReleaseBuild = taskNames.contains("release") || "true".equals(System.getenv("SPRINGFOX_RELASE"))
 
     SemanticVersion buildVersion = versioningStrategy.buildVersion(releaseType, isReleaseBuild)
     project.logger.lifecycle("[RELEASE] current version: ${versioningStrategy.current(project)}, " +

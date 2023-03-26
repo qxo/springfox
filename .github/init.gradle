@@ -1,0 +1,25 @@
+allprojects {
+    apply plugin: 'maven-publish'
+
+/*
+   buildscript {
+        repositories repoConfig
+    }
+
+    repositories repoConfig
+*/
+    //以下是发布相关配置
+    // 发布到本地: gradle  publishToMavenLocal
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = "https://maven.pkg.github.com/qxo/springfox"
+                credentials {
+                    username = System.getenv("GPR_USER")
+                    password = System.getenv("GPR_TOKEN")
+                }
+            }
+        }
+    }
+}
